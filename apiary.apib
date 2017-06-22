@@ -1,0 +1,487 @@
+FORMAT: 1A
+HOST: http://omi.yourcompany.com/
+
+# OMI API Specification - MVI 1.0 (beta)
+
+OMI is a non-profit initiative of leading academic institutions, music and media
+industry organizations, creators, technologists, entrepreneurs and policy experts
+who love and value music.
+
+The mission of the open music initiative is to promote and advance the development
+of open source standards and innovation related to music, to help assure proper
+compensation for all creators, performers and rights holders of music.
+
+New technologies can be applied to radically simplify the way music rights owners
+are identified and compensated, resulting in sustainable business models for artists,
+entrepreneurs and music businesses alike.
+
+We are committed to making change in the following areas:
+
++ Technology
++ Advocacy
++ Education
++ Policy
+
+This API is intended to be used by OMI members, by deploying a supporting implementation to somewhere like `http://omi.yourcompany.com/`.
+
+## Scope of OMI
+
+This API is an informational draft for a minimal API that will provide a means for participants in the music ecosystem to share information about recordings, works, and their relationships in a relatively straightforward manner. The goal is to engender a degree of sharing through 'Minimal Viable Interoperability' through APIs that encourage a federated or distributed approach while not requiring ecosystem participants to given wholesale access to their data, or requiring registration in a centralized system.
+
+## Version history
+
++ 2017-02-01 - draft v0.0.1
++ 2017-03-07 - draft v0.1 for OMI NY
++ 2017-06-22 - draft v0.2 beta release
+
+---------------------------------------
+# Common API Conventions
+## API Versioning
+
+The OMI Version is based on the common SemVer structure of a `major.minor.patch` version number string.
+Any changes in the `major` number might break backwards compatibility, `minor` changes should always be backwards compatible
+and `patch` level changes do not change the protocol or its content only descriptions, notes, etc in the documentation and
+therefor do not need to be passed in the request.
+
+Versioning of the OMI APIs is indicated by two mechanisms: headers and url prefixes. As a general principal, the prefix _must_ be supported by all conforming implementations. Implementations _may_ also include an `X-OMI-Version` header in the HTTP request and response.
+
++ Currently the version prefix is defined as `v1.0`
++ Currently the only supported value for the HTTP header is `1.0`
+
+## Content Types
+
+As a general rule, all APIs produce JSON response data, defined by the appropriate schemas. The HTTP `Content-Type` header will be set to `application/json` and may include additional content type parameters, such as the character encoding, data version, etc. _TODO: Should we support something like `application/json+recording`_
+
+All JSON object types will have a set of predefined fields with associated types defined, some of which will be optional. Implementations _must_ support the required fields, and _may_ support the optional fields.
+
+### Extensions to standard types
+
+In addition to the defined properties, implementations _may_ include properties not defined within this specification. Such properties _should_ be marked as such: it is recommended that the extension properties be included as members of an outer `extensions` property as shown below:
+```
+{
+  "name": "....",
+  // Extension properties
+  "ext": {
+    "foo": {
+      ...
+    },
+    "bar": {
+      ...
+    }
+  }
+}
+```  
+It is also recommended that JSON mechanisms such as `@class` and `@type` be used to indicate the type and/or schema or extension properties.
+
+## Authentication and Authorization
+
+Authentication and authorization are currently outside the scope of this document: it is imagined that many implementations of this API will be governed by business agreements and the access control will be at least partly dictated by the needs of the business. As a general rule, common web/HTTP based mechanisms, such as HTTPS, JWT token, OAuth etc. should be used in order to reduce the burden of integrations with the implementation.
+
+## Query Language
+The query language supported by OMI is deliberately designed to be minimal, extensible, easily typed by humans, and to be easily encoded in URLs. It is deliberately very restricted in this first version and will be extended over time based upon demand from OMI members.
+
+HTTP queries are typically encoded in the URL with each query parameter, with a `name=value` syntax, separated by an `&`. OMI follow the same convention, with a few minor additions. The currently supported operators are listed below.
+
+| Operator      | Meaning                       |
+|:-------------:|:-----------------------------:|
+| =             | Equal to                      |
+| !=            | Not equal to                  |
+| &             | Used to connect filters (and) |
+| *             | Wildcard matching in values   |
+
+This syntax is naturally encoded in URLs. For example, in order to search a collection of recording, for a given title and artist keyword, or to search via ISRC, one can do the following.
+```
+http://omi.yourcompany.com/recordings?title=Crystallize&artist=Stirling
+http://omi.yourcompany.com/recordings?isrc=US-TEY-09-00057
+```
+For objects that support arrays fields (such as `composers`) the corresponding field in a query would be the singular form (`composer`).
+
+As noted above, the query syntax is deliberately very restricted at this point in time, and does not allow for typical `and` and `or` queries: the ampersand symbol (`&`) is considered to mean `and` so the following query is a search for 'title and artist'
+```
+http://omi.yourcompany.com/recordings?title=Crystallize&artist=Sterling
+```
+In the case of objects that support fields that can have multiple values (`composers`) the `and` still applies, so while
+```
+http://omi.yourcompany.com/works?composer=Lindsey%20Sterling
+```
+will query for works by the composer 'Lindsey Stirling', the following will query for works that were a collaboration by 'Lindsey Stirling' and 'John Williams' (i.e. they both appear as composers for the work).
+```
+http://omi.yourcompany.com/works?composer=Lindsey%20Sterling&composer=John%20Williams
+```
+
+### Wildcards and text matching
+
+As a general rule, OMI implementations _should_ support wildcard searches so that inexact matches can be made. Wildcard searches use the `*` symbol to indicate 'any number of additional characters'. As a general principal OMI implementations should perform matching in case insensitive way against the normal composed form (Unicode Normalization Form C).
+
+<!---
+  ****************************************************************************
+  *                                                                          *
+  * DATA STRUCTURES                                                          *
+  *                                                                          *
+  ****************************************************************************
+-->
+
+
+### Data Structures
+
+### Query Response (object)
++ count: 0 (number) - The number of results included in the response.
++ total: 0 (number) - The total number of results available.
++ offset: 0 (number) - The offset (starting from 0) within the total number of available results at which the result set starts.
++ results: `` (array[Recording]) - The list of recordings. The size of the array will equal `count`.
+
+### APIInformation
++ method: GET (string, required)
++ endpoint: /recording (string, required)
++ description: An API supporting... (string, optional)
+
+### Attestor (object)
++ id: `uuid:46166430-D1C6-4C00-9248-84B740FBE53D` (string, required) - A unique identifier for the attestor
++ description: `A random Oracle` (string, optional) - A description of the attestor (usually used to indicate the algorithm, etc)
+
+### Attestation (object)
++ attestor: (Attestor, required) - Information about the attestor, which can be used to validate the provenance of the attestation.
++ created: `01/01/1970 00:02:16`(string, required) - Timestamp indicating when the attestation was created in `MM/DD/YYYY HH:MM:SS format.
++ expires: `01/01/1970 00:02:16`(string, optional) - Timestamp indicating when the attestation will expire in `MM/DD/YYYY HH:MM:SS format.
++ territory: `usa` (string, optional) - An ISO 636 code indicating the territory an attestation is associated with.
++ confidence: 1.0 (number, optional) - The confidence level of the attestation, ranging from 0.0 (not confident) to 1.0 (absolute certainty).
+
+### Album (object)
++ title: Lost in the moment (required) - The title of the album.
++ upc: (string, optional) - The UPC code of the album 
+
+### Recording (object)
++ title: Crystallize (required) - The title of the recording.
++ versionTitle: (string, optional) - The title for a given version of the release.
++ alternateTitles: (array[string], optional) - A list of alternative titles for the recording.
++ isrc: `US-TEY-09-00057` (optional) - This is the primary way recordings should be identified. If the ISRC can be returned, it should be returned.
++ edited: (boolean, optional) - A flag indicating the Edited/Explicit status
++ album: (Album, optional) - The album in which the recording was released.
++ labels: (array[Label], required)
++ artists: (array[Artist], required) - The list of artists. 
++ released: 01/01/1970 (string, optional) - Date of the release for this version in `MM/DD/YYYY` format.
++ duration: 00:02:16 (string, optional) - The length of the recording in HH:MM:SS format.
++ territory: `usa` (string, optional) - An ISO 636 code indicating the territory a recording is associated with.
+
+### Work (object)
++ title: Crystallize (required) - The title of the work.
++ alternateTitles: (array[string], optional) - A list of alternative titles for the work.
++ iswc: `US-TEY-09-00057` (optional) - The primary identitifer for a work. Where available this should be returned.
++ creators: (array[CreatorAndSplit], required)
++ publishers: (array[PublisherAndSplit], required)
++ territory: `usa` (string, optional) - An ISO 636 code indicating the territory a work is associated with.
+
+### Person (object)
++ name: Lindsey Stirling (required)
++ contact: `+1 123-456-7890` (string, optional) - A string holding contact information for the person.
++ territory `usa` (string, optional) - The territory associated with the person. Likely the primary country of residence or registration.
+
+### Artist (Person)
++ isni: `0000 0004 0314 2012` (optional)
++ primary: (boolean, optiona) - A flag indicating whether the Artist is the primary artist for a recording.
++ role: `singer` (optional) - The role of the artist
+
+### Publisher (object)
++ name: Digital Empire (required) - The name of the publisher.
++ contact: `+1 123-456-7890` (string, optional) - A string holding contact information for the publisher.
+
+### PublisherAndSplit (Publisher)
++ split: 1.0 (number, optional) The percentage split the publisher receives.
+
+### Creator (Person)
++ ipi:  `I-000000229-7` (optional) - The IPI number of the creator.
++ isni: `0000 0004 0314 2012` (optional) - This is the recommended identifier for work creators and should be supplied where available.
++ role: `composer` (string, optional) - The role of the creator
++ society: `composer` (string, optional) - The society the creator is affiliated with (for a given work).
+
+### CreatorAndSplit (Creator)
++ split: 1.0 (number, optional) The percentage split the creator receives.
+
+### Label (object)
++ id: string (required) - The identifier for the label.
++ name: string (required) - The Label name.
+
+### RecordingAndWorks
++ recording: (Recording, required) - The recording.
++ works: (array[Work], required) - The possibly empty array of associated Work objects.
+
+### WorkAndRecordings
++ work: (Work, required) - The work.
++ recordings: (array[Recording], required) - The possibly empty array of associated Recording objects.
+
+### APIQueryResponse (Query Response)
++ results: (array[APIInformation]) - The list of supported APIs. The size of the array will equal `count`.
+
+### RecordingQueryResponse (Query Response)
++ results: (array[Recording]) - The list of recordings. The size of the array will equal `count`.
+
+### WorkQueryResponse (Query Response)
++ results: (array[Work]) - The list of works. The size of the array will equal `count`.
+
+### RecordingMappingQueryResponse (Query Response)
++ results: (array[RecordingAndWorks]) - The list of recording to work mappings. The size of the array will equal `count`.
+
+### WorkMappingQueryResponse (Query Response)
++ results: (array[WorkAndRecordings]) - The list of work to recording mappings. The size of the array will equal `count`.
+
+<!---
+  ****************************************************************************
+  *                                                                          *
+  * RECORDING APIs                                                           *
+  *                                                                          *
+  ****************************************************************************
+-->
+---------------------------------------
+# Group Recording Related APIs
+The group defines the APIs for manipulating collections of Recording objects.
+
+<!---
+  * RECORDING API STATUS
+-->
+# Recording API Capabilities [/{version}/recordings/status]
+## Query for supported APIs [GET]
+Query the status of the recording API supported by this implementation of the OMI API specification. The intent for this API is to also allow a degree of 'auto-discovery' of supported API features
+- A 404 (not found) response is returned if the implementation does not support any capabilities related to recordings.
+- A 200 response is returned if the implementation supports recording related APIs. Each entry in the response will contain an HTTP method and URL combination.
++ Headers
+
+        X-OMI-Version: 1.0
++ Response 404 (application/json)
++ Response 200 (application/json)
+  + Attributes (APIQueryResponse)
+
+# Recordings Collection [/{version}/recordings{?query}{%3Blimit}{%3Boffset}]
+<!---
+  * RECORDING QUERIES
+-->
+## Query for Recordings [GET]
+Query a collection of recordings and return the matching recording objects. This URL has a number of optional components: by default, leaving off the optional parameters will return the first _n_ recordings from the collection, where _n_ is defined by the implementation, but defaults to `10`. If no recordings matching the given (optional) criteria are found, an empty result set is returned, as shown below.
+```
+{
+  "count": 0,
+  "total": 0,
+  "offset": 0,
+  "results": []
+}
+```
+The `limit` and `offset` parameters can be used to page over the recordings in the collection. For example, if limit is set to `10` (the default) and `limit` is set to `0`, then the results 0..9 will be returned. If `offset` is set to `10` results 10..19 will be returned.
+
+In the following example, an OMI implementation is being queried for recordings with the given ISRC code.
+```
+http://omi.yourcompany.com/recordings?isrc=US-TEY-09-00057
+```
+_Note: Currently the API does not define a means for sorting the results. This may be updated in a future revision._
++ Parameters
+  + version (string)
+    The API version identifier.
+  + query (optional, string)
+      A filter to be applied to the recording collection in order to reduce the number of returned results. This can be used to find a recording by title and artist, for example. Please refer to the section on queries for the exact syntax to be used for queries. By default, only the standard fields of a recording can be filtered upon.
+  + limit (optional, number)
+      A limit on the number of objects to be returned. Limit can range
+      between 1 and 1000 items.
+      + Default: `10`
+  + offset (number, optional)
+      A offset into the recordings resource collection.
+      + Default: `0`
++ Response 200 (application/json)
+  + Headers
+
+            X-OMI-Version: 1.0
+  + Attributes (RecordingQueryResponse)
+
+<!---
+  * RECORDING REGISTRATION
+-->
+## Register a Recording [POST]
+Register a recording using the provided data. At a very minimum, the recording data _must_ include the required fields for a recording, but _may_ include the optional fields, and _may_ also provide optional extension fields. There is no guarantee that fields other than the required fields will be returned via queries, but it is strongly _recommended_ that implementations store and return the complete set of fields provided.
++ Headers
+
+        X-OMI-Version: 1.0
++ Request (application/json)
+  + Attributes (Recording)
++ Response 201 (text/plain)
+  + Headers
+            Location: URL to recording if direct linking is supported.
+  + Body
+
+            The recording was successfully registered.
++ Response 400
+  + Body
+
+            Bad request. The provided data is invalid.
++ Response 403
+  + Body
+
+            Forbidden. Not authorized to register recordings.
++ Response 409
+  + Body
+
+            Conflict. A recording matching the provided data already exists.
+
+# Recording to Works Mapping Collection [/{version}/recordings/works{?query}{%3Blimit}{%3Boffset}]
+
+<!---
+  * RECORDING TO COMPOSITION QUERIES
+-->
+## Query for Works that match Recordings [GET]
+Query the collection of recordings and return works that are associated with the given recordings.
+```
+{
+  "count": 0,
+  "total": 0,
+  "offset": 0,
+  "results": []
+}
+```
+In the following example, an OMI implementation is being queried for works that map to the recording with the given ISRC code.
+```
+http://omi.yourcompany.com/recordings/works?isrc=US-TEY-09-00057
+```
+_Note: Currently the API does not define a means for sorting the results. This may be updated in a future revision._
++ Parameters
+  + version (string)
+    The API version identifier.
+  + query (optional, string)
+      A filter to be applied to the recording collection in order to reduce the number of returned results. This can be used to find a recording by title and artist, for example. Please refer to the section on queries for the exact syntax to be used for queries. By default, only the standard fields of a recording can be filtered upon.
+  + limit (optional, number)
+      A limit on the number of objects to be returned. Limit can range
+      between 1 and 1000 items.
+      + Default: `10`
+  + offset (number, optional)
+      A offset into the recordings resource collection.
+      + Default: `0`
++ Response 200 (application/json)
+  + Headers
+
+            X-OMI-Version: 1.0
+  + Attributes (RecordingMappingQueryResponse)
+
+<!---
+  ****************************************************************************
+  *                                                                          *
+  * COMPOSITION APIs                                                         *
+  *                                                                          *
+  ****************************************************************************
+-->
+---------------------------------------
+# Group Work Related APIs
+The group defines the APIs for manipulating collections of Work objects.
+
+<!---
+  * COMPOSITION API STATUS
+-->
+# Work API Capabilities [/{version}/works/status]
+## Query for supported APIs [GET]
+Query the status of the work API supported by this implementation of the OMI API specification. The intent for this API is to also allow a degree of 'auto-discovery' of supported API features
+- A 404 (not found) response is returned if the implementation does not support any capabilities related to works.
+- A 200 response is returned if the implementation supports work related APIs. Each entry in the response will contain an HTTP method and URL combination.
++ Headers
+
+        X-OMI-Version: 1.0
++ Response 404 (application/json)
++ Response 200 (application/json)
+  + Attributes (APIQueryResponse)
+
+# Works Collection [/{version}/works{?query}{%3Blimit}{%3Boffset}]
+<!---
+  * WORK QUERIES
+-->
+## Query for Works [GET]
+Query a collection of works and return the matching works objects. This URL has a number of optional components: by default, leaving off the optional parameters will return the first _n_ works from the collection, where _n_ is defined by the implementation, but defaults to `10`. If no works matching the given (optional) criteria are found, an empty result set is returned, as shown below.
+```
+{
+  "count": 0,
+  "total": 0,
+  "offset": 0,
+  "results": []
+}
+```
+The `limit` and `offset` parameters can be used to page over the works in the collection. For example, if limit is set to `10` (the default) and `limit` is set to `0`, then the results 0..9 will be returned. If `offset` is set to `10` results 10..19 will be returned.
+
+In the following example, an OMI implementation is being queried for works by the given composer.
+```
+http://omi.yourcompany.com/works?composer=Williams
+```
+_Note: Currently the API does not define a means for sorting the results. This may be updated in a future revision._
++ Parameters
+  + version (string)
+    The API version identifier.
+  + query (optional, string)
+      A filter to be applied to the work collection in order to reduce the number of returned results. This can be used to find a work by composer for example. Please refer to the section on queries for the exact syntax to be used for queries. By default, only the standard fields of a recording can be filtered upon.
+  + limit (optional, number)
+      A limit on the number of objects to be returned. Limit can range between 1 and 1000 items.
+      + Default: `10`
+  + offset (number, optional)
+      A offset into the works resource collection.
+      + Default: `0`
++ Response 200 (application/json)
+  + Headers
+
+            X-OMI-Version: 1.0
+  + Attributes (WorkQueryResponse)
+
+<!---
+  * WORK REGISTRATION
+-->
+## Register a Work [POST]
+Register a work using the provided data. At a very minimum, the work data _must_ include the required fields for a work, but _may_ include the optional fields, and _may_ also provide optional extension fields. There is no guarantee that fields other than the required fields will be returned via queries, but it is strongly _recommended_ that implementations store and return the complete set of fields provided.
++ Headers
+
+        X-OMI-Version: 1.0
++ Request (application/json)
+  + Attributes (Work)
++ Response 201 (text/plain)
+  + Headers
+            Location: URL to work if direct linking is supported.
+  + Body
+
+            The work was successfully registered.
++ Response 400
+  + Body
+
+            Bad request. The provided data is invalid.
++ Response 403
+  + Body
+
+            Forbidden. Not authorized to register works.
++ Response 409
+  + Body
+
+            Conflict. A work matching the provided data already exists.
+
+# Work to Recordings Mapping Collection [/{version}/works/recordings{?query}{%3Blimit}{%3Boffset}]
+
+<!---
+  * WORK TO RECORDING QUERIES
+-->
+## Query for Recordings that match Works [GET]
+Query the collection of works and return recordings that are associated with the given works.
+```
+{
+  "count": 0,
+  "total": 0,
+  "offset": 0,
+  "results": []
+}
+```
+In the following example, an OMI implementation is being queried for recordings that map to the work by the given composer.
+```
+http://omi.yourcompany.com/works/recordings?composer=Williams
+```
+_Note: Currently the API does not define a means for sorting the results. This may be updated in a future revision._
++ Parameters
+  + version (string)
+    The API version identifier.
+  + query (optional, string)
+      A filter to be applied to the work collection in order to reduce the number of returned results. This can be used to find a work by composer for example. Please refer to the section on queries for the exact syntax to be used for queries. By default, only the standard fields of a work can be filtered upon.
+  + limit (optional, number)
+      A limit on the number of objects to be returned. Limit can range between 1 and 1000 items.
+      + Default: `10`
+  + offset (number, optional)
+      A offset into the works resource collection.
+      + Default: `0`
++ Response 200 (application/json)
+  + Headers
+
+            X-OMI-Version: 1.0
+  + Attributes (WorkMappingQueryResponse)
