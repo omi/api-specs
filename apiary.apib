@@ -128,129 +128,119 @@ As a general rule, OMI implementations _should_ support wildcard searches so tha
 + count: 0 (number, required) - The number of results included in the response.
 + total: 0 (number, required) - The total number of results available.
 + offset: 0 (number, required) - The offset (starting from 0) within the total number of available results at which the result set starts.
-+ results: `` (array[Recording]) - The list of recordings. The size of the array will equal `count`.
++ results (array[Recording]) - The list of recordings. The size of the array will equal `count`.
 
 ### APIInformation
-+ method: `GET` (string, required)
-+ endpoint: `/recording` (string, required)
-+ description: `An API supporting...` (string, optional)
++ method: GET (string, required)
++ endpoint: /recording (string, required)
++ description: An API supporting... (string, optional)
 
 ### Attestor (object)
-+ id: `uuid:46166430-D1C6-4C00-9248-84B740FBE53D` (string, required) - A unique identifier for the attestor
-+ description: `A random Oracle` (string, optional) - A description of the attestor (usually used to indicate the algorithm, etc)
++ id: uuid:46166430-D1C6-4C00-9248-84B740FBE53D (string, required) - A unique identifier for the attestor
++ description: A random Oracle (string, optional) - A description of the attestor (usually used to indicate the algorithm, etc)
 
 ### Attestation (object)
-+ attestor: (Attestor, required) - Information about the attestor, which can be used to validate the provenance of the attestation.
-+ created: `01/01/1970 00:02:16`(string, required) - Timestamp indicating when the attestation was created in `MM/DD/YYYY HH:MM:SS format.
-+ expires: `01/01/1970 00:02:16`(string, optional) - Timestamp indicating when the attestation will expire in `MM/DD/YYYY HH:MM:SS format.
-+ territory: `usa` (string, optional) - An ISO 3166 code indicating the territory an attestation is associated with.
++ attestor (Attestor, required) - Information about the attestor, which can be used to validate the provenance of the attestation.
++ created: 01/01/1970 00:02:16(string, required) - Timestamp indicating when the attestation was created in `MM/DD/YYYY HH:MM:SS format.
++ expires: 01/01/1970 00:02:16(string, optional) - Timestamp indicating when the attestation will expire in `MM/DD/YYYY HH:MM:SS format.
++ territory: usa (string, optional) - An ISO 3166 code indicating the territory an attestation is associated with.
 + confidence: 1.0 (number, optional) - The confidence level of the attestation, ranging from 0.0 (not confident) to 1.0 (absolute certainty).
 
 ### Album (object)
-+ title: `Lost in the moment` (string, required) - The title of the album.
-+ upc: `123456789012` (string, optional) - The UPC code of the album 
++ title: Lost in the moment (string, required) - The title of the album.
++ upc: 123456789012 (string, optional) - The UPC code of the album 
 
 ### Recording (object)
-+ title: `Crystallize` (string, required) - The title of the recording.
-+ versionTitle: `` (string, optional) - The title for a given version of the release.
-+ alternateTitles: (array[string], optional) - A list of alternative titles for the recording.
-+ isrc: `US-TEY-09-00057` (optional) - This is the primary way recordings should be identified. If the ISRC can be returned, it should be returned.
-+ edited: (boolean, optional) - A flag indicating the Edited/Explicit status
-+ album: (Album, optional) - The album in which the recording was released.
-+ labels: (array[Label], required)
-+ artists: (array[Artist], required) - The list of artists. 
-+ released: `01/01/1970` (string, optional) - Date of the release for this version in `MM/DD/YYYY` format.
-+ duration: `00:02:16` (string, optional) - The length of the recording in HH:MM:SS format.
-+ territory: `usa` (string, optional) - An ISO 3166 code indicating the territory a recording is associated with.
++ title: Crystallize (string, required) - The title of the recording.
++ versionTitle: Crystallize Live Bonus Track (string, optional) - The title for a given version of the release.
++ alternateTitles (array[string], optional) - A list of alternative titles for the recording.
++ isrc: US-TEY-09-00057 (optional) - This is the primary way recordings should be identified. If the ISRC can be returned, it should be returned.
++ edited: false (boolean, optional) - A flag indicating the Edited/Explicit status
++ album (Album, optional) - The album in which the recording was released.
++ labels (array[Label], optional)
++ primary_artist (Artist, required) - Primary artist. 
++ additional_artists (array[Artist], optional) - Additional features or guest artists.
++ released: 01/01/1970 (string, optional) - Date of the release for this version in `MM/DD/YYYY` format.
++ duration: 00:02:16 (string, optional) - The length of the recording in HH:MM:SS format.
++ territory: usa (string, optional) - An ISO 3166 code indicating the territory a recording is associated with.
 
 ### Work (object)
-+ title: `Crystallize` (string, required) - The title of the work.
-+ alternateTitles: (array[string], optional) - A list of alternative titles for the work.
-+ iswc: `US-TEY-09-00057` (string, optional) - The primary identitifer for a work. Where available this should be returned.
-+ creators: (array[CreatorAndSplit], required)
-+ publishers: (array[PublisherAndSplit], required)
-+ territory: `usa` (string, optional) - An ISO 3166 code indicating the territory a work is associated with.
++ title: Crystallize (string, required) - The title of the work.
++ alternateTitles: [] (array[string], optional) - A list of alternative titles for the work.
++ iswc: US-TEY-09-00057 (string, optional) - The primary identitifer for a work. Where available this should be returned.
++ creators: [] (array[CreatorAndSplit], required)
++ publishers: [] (array[PublisherAndSplit], required)
++ territory: usa (string, optional) - An ISO 3166 code indicating the territory a work is associated with.
 
 ### Person (object)
-+ name: `Lindsey Stirling` (string, required)
-+ contact: `+1 123-456-7890` (string, optional) - A string holding contact information for the person.
-+ territory `usa` (string, optional) - The territory associated with the person. The primary country of residence or registration as an ISO 3166 code.
++ name: Lindsey Stirling (string, required)
++ contact: +1 123-456-7890 (string, optional) - A string holding contact information for the person.
++ territory usa (string, optional) - The territory associated with the person. The primary country of residence or registration as an ISO 3166 code.
 
 ### Artist (Person)
-+ isni: `0000 0004 0314 2012` (string, optional)
-+ primary: (boolean, optional) - A flag indicating whether the Artist is the primary artist for a recording.
-+ role: `singer` (optional) - The role of the artist
++ isni: 0000-0004-0314-2012 (string, optional)
++ primary: true (boolean, optional) - A flag indicating whether the Artist is the primary artist for a recording.
++ role: singer (optional) - The role of the artist
 
 ### Publisher (object)
-+ name: `Digital Empire` (string, required) - The name of the publisher.
-+ contact: `+1 123-456-7890` (string, optional) - A string holding contact information for the publisher.
++ name: Digital Empire (string, required) - The name of the publisher.
++ contact: +1 123-456-7890 (string, optional) - A string holding contact information for the publisher.
 
 ### PublisherAndSplit (Publisher)
 + split: 1.0 (number, optional) The percentage split the publisher receives.
 
 ### Creator (Person)
-+ ipi:  `I-000000229-7` (string, optional) - The IPI number of the creator.
-+ isni: `0000 0004 0314 2012` (string, optional) - This is the recommended identifier for work creators and should be supplied where available.
-+ role: `composer` (string, optional) - The role of the creator
-+ society: `composer` (string, optional) - The society the creator is affiliated with (for a given work).
++ ipi: I-000000229-7 (string, optional) - The IPI number of the creator.
++ isni: 0000-0004-0314-2012 (string, optional) - This is the recommended identifier for work creators and should be supplied where available.
++ role: composer (string, optional) - The role of the creator
++ society: composer (string, optional) - The society the creator is affiliated with (for a given work).
 
 ### CreatorAndSplit (Creator)
 + split: 1.0 (number, optional) The percentage split the creator receives.
 
 ### Label (object)
-+ id: `...` (string, required) - The identifier for the label.
-+ name: `Sony Music` (string, required) - The Label name.
++ id: uuid:46166430-D1C6-4C00-9248-84B740FBE53D (string, required) - The identifier for the label.
++ name: Sony Music (string, required) - The Label name.
 
 ### RecordingAndWorks (object)
-+ recording: (Recording, required) - The recording.
-+ works: (array[Work], required) - The possibly empty array of associated Work objects.
-+ attestation: (Attestation, required) - Attestation of the Recording to Works mapping.
++ recording (Recording, required) - The recording.
++ works (array[Work], required) - The possibly empty array of associated Work objects.
++ attestation (Attestation, required) - Attestation of the Recording to Works mapping.
 
 ### WorkAndRecordings (object)
-+ work: (Work, required) - The work.
-+ recordings: (array[Recording], required) - The possibly empty array of associated Recording objects.
-+ attestation: (Attestation, required) - Attestation of the Work to Recordings mapping.
++ work (Work, required) - The work.
++ recordings (array[Recording], required) - The possibly empty array of associated Recording objects.
++ attestation (Attestation, required) - Attestation of the Work to Recordings mapping.
 
 ### WorkContributors (object)
-+ work: (Work, required) - The work.
-+ contributors: (array[Person, Artist, Creator], required) - The possibly empty array of associated Recording objects.
-+ attestation: (Attestation, required) - Attestation of the Work to Recordings mapping.
++ work (Work, required) - The work.
++ contributors (array[Person, Artist, Creator], required) - The possibly empty array of associated Recording objects.
++ attestation (Attestation, required) - Attestation of the Work to Recordings mapping.
 
 ### RecordingContributors (object)
-+ recording: (Recording, required) - The work.
-+ contributors: (array[Person, Artist, Creator], required) - The possibly empty array of associated Recording objects.
-+ attestation: (Attestation, required) - Attestation of the Work to Recordings mapping.
++ recording (Recording, required) - The work.
++ contributors (array[Person, Artist, Creator], required) - The possibly empty array of associated Recording objects.
++ attestation (Attestation, required) - Attestation of the Work to Recordings mapping.
 
 
 ### APIQueryResponse (Query Response)
-+ results: (array[APIInformation], required) - The list of supported APIs. The size of the array will equal `count`.
++ results (array[APIInformation], required) - The list of supported APIs. The size of the array will equal `count`.
 
 ### RecordingQueryResponse (Query Response)
-+ results: (array[Recording], required) - The list of recordings. The size of the array will equal `count`.
++ results (array[Recording], required) - The list of recordings. The size of the array will equal `count`.
 
 ### WorkQueryResponse (Query Response)
-+ results: (array[Work], required) - The list of works. The size of the array will equal `count`.
++ results (array[Work], required) - The list of works. The size of the array will equal `count`.
 
 ### RecordingMappingQueryResponse (Query Response)
-+ results: (array[RecordingAndWorks], required) - The list of recording to work mappings. The size of the array will equal `count`.
++ results (array[RecordingAndWorks], required) - The list of recording to work mappings. The size of the array will equal `count`.
 
 ### WorkMappingQueryResponse (Query Response)
-+ results: (array[WorkAndRecordings], required) - The list of work to recording mappings. The size of the array will equal `count`.
++ results (array[WorkAndRecordings], required) - The list of work to recording mappings. The size of the array will equal `count`.
 
-<!---
-  ****************************************************************************
-  *                                                                          *
-  * RECORDING APIs                                                           *
-  *                                                                          *
-  ****************************************************************************
--->
----------------------------------------
 # Group Recording Related APIs
 The group defines the APIs for manipulating collections of Recording objects.
 
-<!---
-  * RECORDING API STATUS
--->
 # Recording API Capabilities [/{version}/recordings/status]
 ## Query for supported APIs [GET]
 Query the status of the recording API supported by this implementation of the OMI API specification. The intent for this API is to also allow a degree of 'auto-discovery' of supported API features
@@ -264,9 +254,7 @@ Query the status of the recording API supported by this implementation of the OM
   + Attributes (APIQueryResponse)
 
 # Recordings Collection [/{version}/recordings{%3Blimit}{%3Boffset}{?query_field}]
-<!---
-  * RECORDING QUERIES
--->
+
 ## Query for Recordings [GET]
 Query a collection of recordings and return the matching recording objects. This URL has a number of optional components: by default, leaving off the optional parameters will return the first _n_ recordings from the collection, where _n_ is defined by the implementation, but defaults to `10`. If no recordings matching the given (optional) criteria are found, an empty result set is returned, as shown below.
 ```
@@ -302,9 +290,6 @@ _Note: Currently the API does not define a means for sorting the results. This m
             X-OMI-Version: 1.0
   + Attributes (RecordingQueryResponse)
 
-<!---
-  * RECORDING REGISTRATION
--->
 ## Register a Recording [POST]
 Register a recording using the provided data. At a very minimum, the recording data _must_ include the required fields for a recording, but _may_ include the optional fields, and _may_ also provide optional extension fields. There is no guarantee that fields other than the required fields will be returned via queries, but it is strongly _recommended_ that implementations store and return the complete set of fields provided.
 + Headers
@@ -314,6 +299,7 @@ Register a recording using the provided data. At a very minimum, the recording d
   + Attributes (Recording)
 + Response 201 (text/plain)
   + Headers
+
             Location: URL to recording if direct linking is supported.
   + Body
 
@@ -333,9 +319,6 @@ Register a recording using the provided data. At a very minimum, the recording d
 
 # Recording to Works Mapping Collection [/{version}/recordings/works{%3Blimit}{%3Boffset}{?query_field}]
 
-<!---
-  * RECORDING TO COMPOSITION QUERIES
--->
 ## Query for Works that match Recordings [GET]
 Query the collection of recordings and return works that are associated with the given recordings.
 ```
@@ -371,9 +354,6 @@ _Note: Currently the API does not define a means for sorting the results. This m
 
 # Recording to Contributors Mapping Collection [/{version}/recordings/contributors{%3Blimit}{%3Boffset}{?query_field}]
 
-<!---
-  * RECORDING TO CONTRIBUTORS QUERIES
--->
 ## Query for contributors that match Recordings [GET]
 Query the collection of works and return contributors that are associated with the given works.
 ```
@@ -406,20 +386,9 @@ _Note: Currently the API does not define a means for sorting the results. This m
             X-OMI-Version: 1.0
   + Attributes (RecordingContributors)
 
-<!---
-  ****************************************************************************
-  *                                                                          *
-  * COMPOSITION APIs                                                         *
-  *                                                                          *
-  ****************************************************************************
--->
----------------------------------------
 # Group Work Related APIs
 The group defines the APIs for manipulating collections of Work objects.
 
-<!---
-  * COMPOSITION API STATUS
--->
 # Work API Capabilities [/{version}/works/status]
 ## Query for supported APIs [GET]
 Query the status of the work API supported by this implementation of the OMI API specification. The intent for this API is to also allow a degree of 'auto-discovery' of supported API features
@@ -433,9 +402,7 @@ Query the status of the work API supported by this implementation of the OMI API
   + Attributes (APIQueryResponse)
 
 # Works Collection [/{version}/works{%3Blimit}{%3Boffset}{?query_field}]
-<!---
-  * WORK QUERIES
--->
+
 ## Query for Works [GET]
 Query a collection of works and return the matching works objects. This URL has a number of optional components: by default, leaving off the optional parameters will return the first _n_ works from the collection, where _n_ is defined by the implementation, but defaults to `10`. If no works matching the given (optional) criteria are found, an empty result set is returned, as shown below.
 ```
@@ -470,9 +437,6 @@ _Note: Currently the API does not define a means for sorting the results. This m
             X-OMI-Version: 1.0
   + Attributes (WorkQueryResponse)
 
-<!---
-  * WORK REGISTRATION
--->
 ## Register a Work [POST]
 Register a work using the provided data. At a very minimum, the work data _must_ include the required fields for a work, but _may_ include the optional fields, and _may_ also provide optional extension fields. There is no guarantee that fields other than the required fields will be returned via queries, but it is strongly _recommended_ that implementations store and return the complete set of fields provided.
 + Headers
@@ -482,6 +446,7 @@ Register a work using the provided data. At a very minimum, the work data _must_
   + Attributes (Work)
 + Response 201 (text/plain)
   + Headers
+
             Location: URL to work if direct linking is supported.
   + Body
 
@@ -501,9 +466,6 @@ Register a work using the provided data. At a very minimum, the work data _must_
 
 # Work to Recordings Mapping Collection [/{version}/works/recordings{%3Blimit}{%3Boffset}{?query_field}]
 
-<!---
-  * WORK TO RECORDING QUERIES
--->
 ## Query for Recordings that match Works [GET]
 Query the collection of works and return recordings that are associated with the given works.
 ```
@@ -538,9 +500,6 @@ _Note: Currently the API does not define a means for sorting the results. This m
 
 # Work to Contributors Mapping Collection [/{version}/works/contributors{%3Blimit}{%3Boffset}{?query_field}]
 
-<!---
-  * WORK TO CONTRIBUTORS QUERIES
--->
 ## Query for contributors that match Works [GET]
 Query the collection of works and return contributors that are associated with the given works.
 ```
