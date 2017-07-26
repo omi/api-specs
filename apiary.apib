@@ -201,15 +201,26 @@ As a general rule, OMI implementations _should_ support wildcard searches so tha
 + id: `...` (string, required) - The identifier for the label.
 + name: `Sony Music` (string, required) - The Label name.
 
-### RecordingAndWorks
+### RecordingAndWorks (object)
 + recording: (Recording, required) - The recording.
 + works: (array[Work], required) - The possibly empty array of associated Work objects.
 + attestation: (Attestation, required) - Attestation of the Recording to Works mapping.
 
-### WorkAndRecordings
+### WorkAndRecordings (object)
 + work: (Work, required) - The work.
 + recordings: (array[Recording], required) - The possibly empty array of associated Recording objects.
 + attestation: (Attestation, required) - Attestation of the Work to Recordings mapping.
+
+### WorkContributors (object)
++ work: (Work, required) - The work.
++ contributors: (array[Person, Artist, Creator], required) - The possibly empty array of associated Recording objects.
++ attestation: (Attestation, required) - Attestation of the Work to Recordings mapping.
+
+### RecordingContributors (object)
++ recording: (Recording, required) - The work.
++ contributors: (array[Person, Artist, Creator], required) - The possibly empty array of associated Recording objects.
++ attestation: (Attestation, required) - Attestation of the Work to Recordings mapping.
+
 
 ### APIQueryResponse (Query Response)
 + results: (array[APIInformation], required) - The list of supported APIs. The size of the array will equal `count`.
@@ -358,6 +369,43 @@ _Note: Currently the API does not define a means for sorting the results. This m
             X-OMI-Version: 1.0
   + Attributes (RecordingMappingQueryResponse)
 
+# Recording to Contributors Mapping Collection [/{version}/recordings/contributors{%3Blimit}{%3Boffset}{?query_field}]
+
+<!---
+  * RECORDING TO CONTRIBUTORS QUERIES
+-->
+## Query for contributors that match Recordings [GET]
+Query the collection of works and return contributors that are associated with the given works.
+```
+{
+  "count": 0,
+  "total": 0,
+  "offset": 0,
+  "results": []
+}
+```
+In the following example, an OMI implementation is being queried for contributors that map to the work by the given title.
+```
+http://omi.yourcompany.com/recordings/contributors?title=Purple%20Rain
+```
+_Note: Currently the API does not define a means for sorting the results. This may be updated in a future revision._
++ Parameters
+  + version (string)
+    The API version identifier.
+  + query_field (optional, string)
+      A filter to be applied to the work collection in order to reduce the number of returned results. This can be used to find a work by composer for example. Please refer to the section on queries for the exact syntax to be used for queries. By default, only the standard fields of a work can be filtered upon.
+  + limit (optional, number)
+      A limit on the number of objects to be returned. Limit can range between 1 and 1000 items.
+      + Default: `10`
+  + offset (number, optional)
+      A offset into the works resource collection.
+      + Default: `0`
++ Response 200 (application/json)
+  + Headers
+
+            X-OMI-Version: 1.0
+  + Attributes (RecordingContributors)
+
 <!---
   ****************************************************************************
   *                                                                          *
@@ -487,3 +535,40 @@ _Note: Currently the API does not define a means for sorting the results. This m
 
             X-OMI-Version: 1.0
   + Attributes (WorkMappingQueryResponse)
+
+# Work to Contributors Mapping Collection [/{version}/works/contributors{%3Blimit}{%3Boffset}{?query_field}]
+
+<!---
+  * WORK TO CONTRIBUTORS QUERIES
+-->
+## Query for contributors that match Works [GET]
+Query the collection of works and return contributors that are associated with the given works.
+```
+{
+  "count": 0,
+  "total": 0,
+  "offset": 0,
+  "results": []
+}
+```
+In the following example, an OMI implementation is being queried for contributors that map to the work by the given title.
+```
+http://omi.yourcompany.com/works/contributors?title=Purple%20Rain
+```
+_Note: Currently the API does not define a means for sorting the results. This may be updated in a future revision._
++ Parameters
+  + version (string)
+    The API version identifier.
+  + query_field (optional, string)
+      A filter to be applied to the work collection in order to reduce the number of returned results. This can be used to find a work by composer for example. Please refer to the section on queries for the exact syntax to be used for queries. By default, only the standard fields of a work can be filtered upon.
+  + limit (optional, number)
+      A limit on the number of objects to be returned. Limit can range between 1 and 1000 items.
+      + Default: `10`
+  + offset (number, optional)
+      A offset into the works resource collection.
+      + Default: `0`
++ Response 200 (application/json)
+  + Headers
+
+            X-OMI-Version: 1.0
+  + Attributes (WorkContributors)
