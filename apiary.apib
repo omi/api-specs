@@ -162,14 +162,14 @@ As a general rule, OMI implementations _should_ support wildcard searches so tha
 + additional_artists (array[Artist], optional) - Additional features or guest artists.
 + released: 01/01/1970 (string, optional) - Date of the release for this version in `MM/DD/YYYY` format.
 + duration: 00:02:16 (string, optional) - The length of the recording in HH:MM:SS format.
-+ territory: usa (string, optional) - An ISO 3166 code indicating the territory a recording is associated with.
++ territory:a (string, optional) - An ISO 3166 code indicating the territory a recording is associated with.
 
 ### Work (object)
 + title: Crystallize (string, required) - The title of the work.
-+ alternateTitles: [] (array[string], optional) - A list of alternative titles for the work.
++ alternateTitles (array[string], optional) - A list of alternative titles for the work.
 + iswc: US-TEY-09-00057 (string, optional) - The primary identitifer for a work. Where available this should be returned.
-+ creators: [] (array[CreatorAndSplit], required)
-+ publishers: [] (array[PublisherAndSplit], required)
++ creators (array[CreatorAndSplit], required)
++ publishers (array[PublisherAndSplit], required)
 + territory: usa (string, optional) - An ISO 3166 code indicating the territory a work is associated with.
 
 ### Person (object)
