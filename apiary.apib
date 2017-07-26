@@ -167,9 +167,11 @@ As a general rule, OMI implementations _should_ support wildcard searches so tha
 ### Work (object)
 + title: Crystallize (string, required) - The title of the work.
 + alternateTitles (array[string], optional) - A list of alternative titles for the work.
++ titleSoundRecording (string, required) - The title of the sound recording for the work.
++ alternateTitleSoundRecording (array[string], optional) - A list of alternative titles of the sound recordings for the work.
 + iswc: US-TEY-09-00057 (string, optional) - The primary identitifer for a work. Where available this should be returned.
 + creators (array[CreatorAndSplit], required)
-+ publishers (array[PublisherAndSplit], required)
++ publishers (array[PublisherAndSplit], optional)
 + territory: usa (string, optional) - An ISO 3166 code indicating the territory a work is associated with.
 
 ### Person (object)
