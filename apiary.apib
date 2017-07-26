@@ -204,25 +204,27 @@ As a general rule, OMI implementations _should_ support wildcard searches so tha
 ### RecordingAndWorks
 + recording: (Recording, required) - The recording.
 + works: (array[Work], required) - The possibly empty array of associated Work objects.
++ attestation: (Attestation, required) - Attestation of the Recording to Works mapping.
 
 ### WorkAndRecordings
 + work: (Work, required) - The work.
 + recordings: (array[Recording], required) - The possibly empty array of associated Recording objects.
++ attestation: (Attestation, required) - Attestation of the Work to Recordings mapping.
 
 ### APIQueryResponse (Query Response)
-+ results: (array[APIInformation]) - The list of supported APIs. The size of the array will equal `count`.
++ results: (array[APIInformation], required) - The list of supported APIs. The size of the array will equal `count`.
 
 ### RecordingQueryResponse (Query Response)
-+ results: (array[Recording]) - The list of recordings. The size of the array will equal `count`.
++ results: (array[Recording], required) - The list of recordings. The size of the array will equal `count`.
 
 ### WorkQueryResponse (Query Response)
-+ results: (array[Work]) - The list of works. The size of the array will equal `count`.
++ results: (array[Work], required) - The list of works. The size of the array will equal `count`.
 
 ### RecordingMappingQueryResponse (Query Response)
-+ results: (array[RecordingAndWorks]) - The list of recording to work mappings. The size of the array will equal `count`.
++ results: (array[RecordingAndWorks], required) - The list of recording to work mappings. The size of the array will equal `count`.
 
 ### WorkMappingQueryResponse (Query Response)
-+ results: (array[WorkAndRecordings]) - The list of work to recording mappings. The size of the array will equal `count`.
++ results: (array[WorkAndRecordings], required) - The list of work to recording mappings. The size of the array will equal `count`.
 
 <!---
   ****************************************************************************
@@ -250,7 +252,7 @@ Query the status of the recording API supported by this implementation of the OM
 + Response 200 (application/json)
   + Attributes (APIQueryResponse)
 
-# Recordings Collection [/{version}/recordings{?query}{%3Blimit}{%3Boffset}]
+# Recordings Collection [/{version}/recordings{%3Blimit}{%3Boffset}{?query_field}]
 <!---
   * RECORDING QUERIES
 -->
@@ -274,7 +276,7 @@ _Note: Currently the API does not define a means for sorting the results. This m
 + Parameters
   + version (string)
     The API version identifier.
-  + query (optional, string)
+  + query_field (optional, string)
       A filter to be applied to the recording collection in order to reduce the number of returned results. This can be used to find a recording by title and artist, for example. Please refer to the section on queries for the exact syntax to be used for queries. By default, only the standard fields of a recording can be filtered upon.
   + limit (optional, number)
       A limit on the number of objects to be returned. Limit can range
@@ -318,7 +320,7 @@ Register a recording using the provided data. At a very minimum, the recording d
 
             Conflict. A recording matching the provided data already exists.
 
-# Recording to Works Mapping Collection [/{version}/recordings/works{?query}{%3Blimit}{%3Boffset}]
+# Recording to Works Mapping Collection [/{version}/recordings/works{%3Blimit}{%3Boffset}{?query_field}]
 
 <!---
   * RECORDING TO COMPOSITION QUERIES
@@ -341,7 +343,7 @@ _Note: Currently the API does not define a means for sorting the results. This m
 + Parameters
   + version (string)
     The API version identifier.
-  + query (optional, string)
+  + query_field (optional, string)
       A filter to be applied to the recording collection in order to reduce the number of returned results. This can be used to find a recording by title and artist, for example. Please refer to the section on queries for the exact syntax to be used for queries. By default, only the standard fields of a recording can be filtered upon.
   + limit (optional, number)
       A limit on the number of objects to be returned. Limit can range
@@ -382,7 +384,7 @@ Query the status of the work API supported by this implementation of the OMI API
 + Response 200 (application/json)
   + Attributes (APIQueryResponse)
 
-# Works Collection [/{version}/works{?query}{%3Blimit}{%3Boffset}]
+# Works Collection [/{version}/works{%3Blimit}{%3Boffset}{?query_field}]
 <!---
   * WORK QUERIES
 -->
@@ -406,7 +408,7 @@ _Note: Currently the API does not define a means for sorting the results. This m
 + Parameters
   + version (string)
     The API version identifier.
-  + query (optional, string)
+  + query_field (optional, string)
       A filter to be applied to the work collection in order to reduce the number of returned results. This can be used to find a work by composer for example. Please refer to the section on queries for the exact syntax to be used for queries. By default, only the standard fields of a recording can be filtered upon.
   + limit (optional, number)
       A limit on the number of objects to be returned. Limit can range between 1 and 1000 items.
@@ -449,7 +451,7 @@ Register a work using the provided data. At a very minimum, the work data _must_
 
             Conflict. A work matching the provided data already exists.
 
-# Work to Recordings Mapping Collection [/{version}/works/recordings{?query}{%3Blimit}{%3Boffset}]
+# Work to Recordings Mapping Collection [/{version}/works/recordings{%3Blimit}{%3Boffset}{?query_field}]
 
 <!---
   * WORK TO RECORDING QUERIES
@@ -472,7 +474,7 @@ _Note: Currently the API does not define a means for sorting the results. This m
 + Parameters
   + version (string)
     The API version identifier.
-  + query (optional, string)
+  + query_field (optional, string)
       A filter to be applied to the work collection in order to reduce the number of returned results. This can be used to find a work by composer for example. Please refer to the section on queries for the exact syntax to be used for queries. By default, only the standard fields of a work can be filtered upon.
   + limit (optional, number)
       A limit on the number of objects to be returned. Limit can range between 1 and 1000 items.
