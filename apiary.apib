@@ -125,15 +125,15 @@ As a general rule, OMI implementations _should_ support wildcard searches so tha
 ### Data Structures
 
 ### Query Response (object)
-+ count: 0 (number) - The number of results included in the response.
-+ total: 0 (number) - The total number of results available.
-+ offset: 0 (number) - The offset (starting from 0) within the total number of available results at which the result set starts.
++ count: 0 (number, required) - The number of results included in the response.
++ total: 0 (number, required) - The total number of results available.
++ offset: 0 (number, required) - The offset (starting from 0) within the total number of available results at which the result set starts.
 + results: `` (array[Recording]) - The list of recordings. The size of the array will equal `count`.
 
 ### APIInformation
-+ method: GET (string, required)
-+ endpoint: /recording (string, required)
-+ description: An API supporting... (string, optional)
++ method: `GET` (string, required)
++ endpoint: `/recording` (string, required)
++ description: `An API supporting...` (string, optional)
 
 ### Attestor (object)
 + id: `uuid:46166430-D1C6-4C00-9248-84B740FBE53D` (string, required) - A unique identifier for the attestor
@@ -147,50 +147,50 @@ As a general rule, OMI implementations _should_ support wildcard searches so tha
 + confidence: 1.0 (number, optional) - The confidence level of the attestation, ranging from 0.0 (not confident) to 1.0 (absolute certainty).
 
 ### Album (object)
-+ title: Lost in the moment (required) - The title of the album.
-+ upc: (string, optional) - The UPC code of the album 
++ title: `Lost in the moment` (string, required) - The title of the album.
++ upc: `123456789012` (string, optional) - The UPC code of the album 
 
 ### Recording (object)
-+ title: Crystallize (required) - The title of the recording.
-+ versionTitle: (string, optional) - The title for a given version of the release.
++ title: `Crystallize` (string, required) - The title of the recording.
++ versionTitle: `` (string, optional) - The title for a given version of the release.
 + alternateTitles: (array[string], optional) - A list of alternative titles for the recording.
 + isrc: `US-TEY-09-00057` (optional) - This is the primary way recordings should be identified. If the ISRC can be returned, it should be returned.
 + edited: (boolean, optional) - A flag indicating the Edited/Explicit status
 + album: (Album, optional) - The album in which the recording was released.
 + labels: (array[Label], required)
 + artists: (array[Artist], required) - The list of artists. 
-+ released: 01/01/1970 (string, optional) - Date of the release for this version in `MM/DD/YYYY` format.
-+ duration: 00:02:16 (string, optional) - The length of the recording in HH:MM:SS format.
++ released: `01/01/1970` (string, optional) - Date of the release for this version in `MM/DD/YYYY` format.
++ duration: `00:02:16` (string, optional) - The length of the recording in HH:MM:SS format.
 + territory: `usa` (string, optional) - An ISO 3166 code indicating the territory a recording is associated with.
 
 ### Work (object)
-+ title: Crystallize (required) - The title of the work.
++ title: `Crystallize` (string, required) - The title of the work.
 + alternateTitles: (array[string], optional) - A list of alternative titles for the work.
-+ iswc: `US-TEY-09-00057` (optional) - The primary identitifer for a work. Where available this should be returned.
++ iswc: `US-TEY-09-00057` (string, optional) - The primary identitifer for a work. Where available this should be returned.
 + creators: (array[CreatorAndSplit], required)
 + publishers: (array[PublisherAndSplit], required)
 + territory: `usa` (string, optional) - An ISO 3166 code indicating the territory a work is associated with.
 
 ### Person (object)
-+ name: Lindsey Stirling (required)
++ name: `Lindsey Stirling` (string, required)
 + contact: `+1 123-456-7890` (string, optional) - A string holding contact information for the person.
 + territory `usa` (string, optional) - The territory associated with the person. The primary country of residence or registration as an ISO 3166 code.
 
 ### Artist (Person)
-+ isni: `0000 0004 0314 2012` (optional)
-+ primary: (boolean, optiona) - A flag indicating whether the Artist is the primary artist for a recording.
++ isni: `0000 0004 0314 2012` (string, optional)
++ primary: (boolean, optional) - A flag indicating whether the Artist is the primary artist for a recording.
 + role: `singer` (optional) - The role of the artist
 
 ### Publisher (object)
-+ name: Digital Empire (required) - The name of the publisher.
++ name: `Digital Empire` (string, required) - The name of the publisher.
 + contact: `+1 123-456-7890` (string, optional) - A string holding contact information for the publisher.
 
 ### PublisherAndSplit (Publisher)
 + split: 1.0 (number, optional) The percentage split the publisher receives.
 
 ### Creator (Person)
-+ ipi:  `I-000000229-7` (optional) - The IPI number of the creator.
-+ isni: `0000 0004 0314 2012` (optional) - This is the recommended identifier for work creators and should be supplied where available.
++ ipi:  `I-000000229-7` (string, optional) - The IPI number of the creator.
++ isni: `0000 0004 0314 2012` (string, optional) - This is the recommended identifier for work creators and should be supplied where available.
 + role: `composer` (string, optional) - The role of the creator
 + society: `composer` (string, optional) - The society the creator is affiliated with (for a given work).
 
@@ -198,8 +198,8 @@ As a general rule, OMI implementations _should_ support wildcard searches so tha
 + split: 1.0 (number, optional) The percentage split the creator receives.
 
 ### Label (object)
-+ id: string (required) - The identifier for the label.
-+ name: string (required) - The Label name.
++ id: `...` (string, required) - The identifier for the label.
++ name: `Sony Music` (string, required) - The Label name.
 
 ### RecordingAndWorks
 + recording: (Recording, required) - The recording.
